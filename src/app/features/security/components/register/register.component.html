@@ -1,0 +1,86 @@
+<div class="hero bg-base-200 min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+
+        <!-- Sección de bienvenida -->
+        <div class="text-center lg:text-left">
+            <h1 class="text-5xl font-bold">Welcome to SERVO SYNC!</h1>
+            <p class="py-6">
+                Create your account to access your personalized dashboard and manage your devices.
+            </p>
+        </div>
+
+        <!-- Sección de formulario de registro -->
+        <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+            <form class="card-body">
+
+                <!-- Título de bienvenida -->
+                <h2 class="text-center text-2xl font-bold">SERVO SYNC</h2>
+                <h3 class="text-center text-lg font-semibold">Create your account</h3>
+
+                <!-- Mensaje de error global -->
+                <div *ngIf="errorMessage" role="alert" class="alert alert-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ errorMessage }}</span>
+                </div>
+
+                <!-- Campo de entrada para el nombre de usuario -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Username</span>
+                    </label>
+                    <input type="text" id="username" placeholder="Username" class="input input-bordered"
+                        [(ngModel)]="request.username" name="username" required />
+                </div>
+
+                <!-- Campo de entrada para el email -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Email Address</span>
+                    </label>
+                    <input type="email" id="email" placeholder="name@example.com" class="input input-bordered"
+                        [(ngModel)]="request.email" name="email" required />
+                </div>
+
+                <!-- Campo de entrada para la contraseña -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Password</span>
+                    </label>
+                    <input type="password" id="password" placeholder="Password" class="input input-bordered"
+                        [(ngModel)]="request.password" name="password" required />
+                </div>
+
+                <!-- Campo de entrada para confirmar la contraseña -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Confirm Password</span>
+                    </label>
+                    <input type="password" id="confirm_password" placeholder="Confirm Password"
+                        class="input input-bordered" [(ngModel)]="confirmPassword" name="confirm_password" required />
+                </div>
+
+                <!-- Botón de registro -->
+                <div class="form-control mt-4">
+                    <button type="button" class="btn btn-info" (click)="register()">
+                        Register
+                    </button>
+                </div>
+
+                <!-- Enlace para 'Iniciar sesión' -->
+                <div class="text-center mt-4">
+                    <p class="text-sm">
+                        Already have an account?
+                        <a [routerLink]="'/login'" class="link link-info">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

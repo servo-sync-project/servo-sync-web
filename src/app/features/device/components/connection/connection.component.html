@@ -1,0 +1,63 @@
+<div class="mx-auto p-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Lista de robots en cards -->
+        <div *ngFor="let robot of robots" class="card bg-base-100 shadow-xl">
+            <!-- Imagen del robot -->
+            <figure class="relative h-52 w-full">
+                <img [src]="robot.image_url ?? 'images/notFound.png'" alt="Robot Image" class="h-full w-auto rounded-xl" />
+            </figure>
+
+            <div class="card-body">
+                <!-- Nombre del robot -->
+                <h2 class="card-title">{{ robot.botname }}</h2>
+
+                <!-- Número de servos y estado de conexión -->
+                <p>
+                    Servos: {{ robot?.initial_position?.angles?.length ?? 0 }}<br />
+                    Status:
+                    <span [class]="robot.is_connected_broker ? 'text-green-500' : 'text-red-500'">
+                        {{ robot.is_connected_broker ? 'Connected' : 'Disconnected' }}
+                    </span>
+                </p>
+
+                <!-- Descripción del robot -->
+                <p>{{ robot.description }}</p>
+
+                <!-- Botones de acciones -->
+                <div class="card-actions flex flex-wrap gap-2">
+                    <button class="btn btn-error flex-1" (click)="selectRobot(robot); openDeleteModal = true">
+                        Delete
+                    </button>
+                    <button class="btn btn-warning flex-1" (click)="selectRobot(robot); openUpdateModal = true">
+                        Update
+                    </button>
+                    <button class="btn btn-info flex-1" (click)="configureRobot(robot)">
+                        Config
+                    </button>
+                    <button class="btn btn-success flex-1" (click)="toControlView(robot)">
+                        Control
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para crear un nuevo robot -->
+    <div class="flex justify-center mt-4">
+        <button class="btn btn-info btn-lg" (click)="openCreateModal = true">Create New Robot</button>
+    </div>
+
+    <app-create-modal [openModal]="openCreateModal" (response)="createRobot($event)"
+        (modalClosed)="selectedRobot = null; openCreateModal = false"></app-create-modal>
+
+    <app-update-modal [robot]="selectedRobot" [openModal]="openUpdateModal" (response)="updateRobot($event)"
+        (modalClosed)="selectedRobot = null; openUpdateModal = false"></app-update-modal>
+
+    <app-delete-modal [robot]="selectedRobot" [openModal]="openDeleteModal" (response)="deleteRobot($event)"
+        (modalClosed)="selectedRobot = null; openDeleteModal = false"></app-delete-modal>
+
+    <app-config-modal [robot]="selectedRobot" [openModal]="openConfigModal" (response)="updateRobot($event)"
+        (modalClosed)="selectedRobot = null; openConfigModal = false"></app-config-modal>
+</div>
+
+<!-- onRobotCreated($event) onRobotCreated(response: any) -->

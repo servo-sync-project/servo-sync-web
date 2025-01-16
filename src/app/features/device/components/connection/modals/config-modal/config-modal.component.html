@@ -1,0 +1,199 @@
+<!-- Modal para la configuracion de los servo Groups y crear la posicion inicial del robot -->
+<dialog #configModal id="configModal" class="modal">
+    <div class="modal-box w-3/4 max-w-full">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">
+            <x-mark-solid-icon />
+        </button>
+        <h3 class="text-lg text-center font-bold">Configurar Servo Groups</h3>
+        <button class="btn btn-info w-full mt-2" (click)="copyButtonContent()">
+            <document-duplicate-solid-icon/>
+            {{robot?.unique_uid ?? 'NOT FOUND'}}
+        </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+            <div class="flex flex-col h-full gap-4">
+                <div *ngFor="let servoGroup of rightServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                            <chevron-double-up-solid-icon />
+                        </button>
+                        <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                            <chevron-double-down-solid-icon />
+                        </button>
+                    </div>
+                    <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                        <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                            <pencil-square-solid-icon />
+                        </button>
+                    </div>
+                    <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                            placeholder="Nuevo nombre" />
+                        <button class="btn btn-sm btn-circle btn-success" (click)="updateServoGroupName(servoGroup)">
+                            <!-- <check-circle-solid-icon /> -->
+                            <check-circle-outline-icon />
+                        </button>
+                        <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                            <!-- <x-circle-solid-icon /> -->
+                            <x-circle-outline-icon />
+                        </button>
+                    </div>
+                    <div *ngFor="let servo of servoGroup.servo_angles"
+                        class="flex flex-col items-center justify-center">
+                        <label for="right-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
+                        <input type="number" id="right-number-{{ servo.id }}" class="input input-bordered w-full"
+                            min="0" max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
+                            <plus-solid-icon />
+                        </button>
+                        <button class="btn btn-sm btn-info" (click)="deleteServo(servoGroup)">
+                            <minus-solid-icon />
+                        </button>
+                    </div>
+                    <button class="btn w-full mt-4 btn-sm btn-error" (click)="deleteServoGroup(servoGroup)">
+                        <minus-solid-icon />
+                    </button>
+                </div>
+                <button class="btn btn-sm btn-info" (click)="createServoGroup(rightColumn)">
+                    <plus-solid-icon />
+                </button>
+            </div>
+
+            <div class="flex flex-col h-full gap-4">
+                <div class="flex items-center gap-2">
+                    <input type="file" class="file-input file-input-bordered file-input-info w-full max-w-xs"
+                        (change)="onFileSelected($event)" />
+                    <button class="btn btn-info p-2" [disabled]="!selectedImageFile || isLoading"
+                        (click)="uploadImage()">
+                        <ng-container *ngIf="isLoading; else uploadText">
+                            <span class="loading loading-spinner"></span>
+                        </ng-container>
+                        <ng-template #uploadText>
+                            <cloud-arrow-up-solid-icon />
+                        </ng-template>
+                    </button>
+                </div>
+                <div class="flex-grow flex items-center justify-center">
+                    <img [src]="robot?.config_image_url ?? 'images/robotDefault.png'" alt="Robot humanoid" />
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div *ngFor="let servoGroup of middleServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                                <chevron-double-up-solid-icon />
+                            </button>
+                            <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                                <chevron-double-down-solid-icon />
+                            </button>
+                        </div>
+                        <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                            class="flex items-center justify-center gap-2 mt-4">
+                            <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                            <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                                <pencil-square-solid-icon />
+                            </button>
+                        </div>
+                        <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                            class="flex items-center justify-center gap-2 mt-4">
+                            <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                                placeholder="Nuevo nombre" />
+                            <button class="btn btn-sm btn-circle btn-success"
+                                (click)="updateServoGroupName(servoGroup)">
+                                <!-- <check-circle-solid-icon /> -->
+                                <check-circle-outline-icon />
+                            </button>
+                            <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                                <!-- <x-circle-solid-icon /> -->
+                                <x-circle-outline-icon />
+                            </button>
+                        </div>
+                        <div *ngFor="let servo of servoGroup.servo_angles"
+                            class="flex flex-col items-center justify-center">
+                            <label for="middle-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
+                            <input type="number" id="middle-number-{{ servo.id }}" class="input input-bordered w-full"
+                                min="0" max="180" [(ngModel)]="servo.angle"
+                                (change)="updateAndMoveToCurrentPosition()" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-4">
+                            <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
+                                <plus-solid-icon />
+                            </button>
+                            <button class="btn btn-sm btn-info" (click)="deleteServo(servoGroup)">
+                                <minus-solid-icon />
+                            </button>
+                        </div>
+                        <button class="btn w-full mt-4 btn-sm btn-error" (click)="deleteServoGroup(servoGroup)">
+                            <minus-solid-icon />
+                        </button>
+                    </div>
+                    <button class="btn btn-sm btn-info" (click)="createServoGroup(middleColumn)">
+                        <plus-solid-icon />
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col h-full gap-4">
+                <div *ngFor="let servoGroup of leftServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                            <chevron-double-up-solid-icon />
+                        </button>
+                        <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                            <chevron-double-down-solid-icon />
+                        </button>
+                    </div>
+                    <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                        <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                            <pencil-square-solid-icon />
+                        </button>
+                    </div>
+                    <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                            placeholder="Nuevo nombre" />
+                        <button class="btn btn-sm btn-circle btn-success" (click)="updateServoGroupName(servoGroup)">
+                            <!-- <check-circle-solid-icon /> -->
+                            <check-circle-outline-icon />
+                        </button>
+                        <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                            <!-- <x-circle-solid-icon /> -->
+                            <x-circle-outline-icon />
+                        </button>
+                    </div>
+                    <div *ngFor="let servo of servoGroup.servo_angles"
+                        class="flex flex-col items-center justify-center">
+                        <label for="left-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
+                        <input type="number" id="left-number-{{ servo.id }}" class="input input-bordered w-full" min="0"
+                            max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
+                            <plus-solid-icon />
+                        </button>
+                        <button class="btn btn-sm btn-info" (click)="deleteServo(servoGroup)">
+                            <minus-solid-icon />
+                        </button>
+                    </div>
+                    <button class="btn w-full mt-4 btn-sm btn-error" (click)="deleteServoGroup(servoGroup)">
+                        <minus-solid-icon />
+                    </button>
+                </div>
+                <button class="btn btn-sm btn-info" (click)="createServoGroup(leftColumn)">
+                    <plus-solid-icon />
+                </button>
+            </div>
+        </div>
+        <div class="modal-action">
+            <input type="number" class="input input-bordered" min="100" max="1000" [(ngModel)]="delay"
+                placeholder="Tiempo (ms)" />
+            <button class="btn btn-info" (click)="updateInitialPosition()">Create Initial Position</button>
+        </div>
+    </div>
+</dialog>

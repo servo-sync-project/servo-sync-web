@@ -1,0 +1,61 @@
+<dialog #updateModal id="updateModal" class="modal">
+    <div class="modal-box">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">
+            <x-mark-solid-icon />
+        </button>
+        <!-- Formulario para actualizar el robot -->
+        <form class="card-body" (ngSubmit)="updateRobot()">
+            <h3 class="text-lg font-bold">Update Robot</h3>
+            
+            <!-- Mensaje de error global -->
+            <div *ngIf="errorMessage" role="alert" class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ errorMessage }}</span>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Robot Image</span>
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="file" class="file-input file-input-bordered file-input-info w-full max-w-xs"
+                           (change)="onFileSelected($event)" />
+                    <button class="btn btn-info p-2" [disabled]="!selectedImageFile || isLoading" (click)="uploadImage()">
+                        <ng-container *ngIf="isLoading; else uploadText">
+                            <span class="loading loading-spinner"></span>
+                        </ng-container>
+                        <ng-template #uploadText>
+                            <cloud-arrow-up-solid-icon/>
+                        </ng-template>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Campo de nombre del robot -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Robot Name</span>
+                </label>
+                <input type="text" class="input input-bordered" name="botname" [(ngModel)]="request.botname" required />
+            </div>
+
+            <!-- Campo de descripción -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Description</span>
+                </label>
+                <textarea class="textarea textarea-bordered" name="description" [(ngModel)]="request.description"
+                    required>
+                </textarea>
+            </div>
+
+            <div class="modal-action">
+                <button class="btn btn-warning" type="submit">Update Robot</button>
+            </div>
+        </form>
+    </div>
+</dialog>

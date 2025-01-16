@@ -1,0 +1,10 @@
+services:
+  servo-sync-web:
+    build: .
+    image: servo-sync-web-image
+    container_name: servo-sync-web-container
+    ports:
+      - "80:80"
+
+networks:
+  servo-sync-network:

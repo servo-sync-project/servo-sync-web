@@ -1,0 +1,55 @@
+<div class="hero bg-base-200 min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+
+        <!-- Sección de bienvenida -->
+        <div class="text-center lg:text-left">
+            <h1 class="text-5xl font-bold">Verify Your Email</h1>
+            <p class="py-6">
+                Please check your email for a verification link.
+            </p>
+        </div>
+
+        <!-- Sección de formulario de verificación de correo -->
+        <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+            <form class="card-body">
+
+                <!-- Título de bienvenida -->
+                <h2 class="text-center text-2xl font-bold">SERVO SYNC</h2>
+                <h3 class="text-center text-lg font-semibold">Email Verification</h3>
+
+                <!-- Mensaje de error global -->
+                <div *ngIf="errorMessage" role="alert" class="alert alert-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ errorMessage }}</span>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-sm">
+                        Please check your email for the verification link. If you haven't received it, click the button below to resend the email.
+                      </p>
+                </div>
+                <!-- Botón para enviar solicitud de verificación de correo -->
+                <div class="form-control mt-4">
+                    <button type="button" class="btn btn-info" (click)="sendVerificationEmail()">
+                        Send Verification Link
+                    </button>
+                </div>
+
+                <!-- Enlace para 'Volver a iniciar sesión' -->
+                <div class="text-center mt-4">
+                    <p class="text-sm">
+                        Already verified your email?
+                        <a [routerLink]="'/login'" class="link link-info">
+                            Login
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

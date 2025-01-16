@@ -1,0 +1,231 @@
+<div class="mx-auto p-4 grid grid-cols-1 lg:grid-cols-6">
+    <!-- Contenedor de controles (4/6 de la pantalla) -->
+    <div class="col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+        <div class="flex flex-col h-full gap-4">
+            <div *ngFor="let servoGroup of rightServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                    class="flex items-center justify-center gap-2 mt-4">
+                    <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                    <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                        <pencil-square-solid-icon />
+                    </button>
+                </div>
+                <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                    class="flex items-center justify-center gap-2 mt-4">
+                    <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                        placeholder="Nuevo nombre" />
+                    <button class="btn btn-sm btn-circle btn-success" (click)="updateServoGroupName(servoGroup)">
+                        <check-circle-outline-icon />
+                    </button>
+                    <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                        <x-circle-outline-icon />
+                    </button>
+                </div>
+                <div *ngFor="let servo of servoGroup.servo_angles" class="mt-4">
+                    <label for="right-servo-{{ servo.id }}" class="label">Servo Angle {{ servo.id }}</label>
+                    <input type="range" id="right-servo-{{ servo.id }}" class="range range-info" min="0" max="180"
+                        step="1" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                    <input type="number" id="right-number-{{ servo.id }}" class="input input-bordered w-full mt-2"
+                        min="0" max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col h-full gap-4">
+            <div class="flex items-center gap-2">
+                <input type="file" class="file-input file-input-bordered file-input-info w-full max-w-xs"
+                    (change)="onFileSelected($event)" />
+                <button class="btn btn-info p-2" [disabled]="!selectedImageFile || isLoading" (click)="uploadImage()">
+                    <ng-container *ngIf="isLoading; else uploadText">
+                        <span class="loading loading-spinner"></span>
+                    </ng-container>
+                    <ng-template #uploadText>
+                        <cloud-arrow-up-solid-icon />
+                    </ng-template>
+                </button>
+            </div>
+
+            <div class="flex-grow flex items-center justify-center">
+                <img [src]="robot?.config_image_url ?? 'images/robotDefault.png'" alt="Robot humanoid" />
+            </div>
+
+            <div class="flex flex-col gap-4"><!-- Iterar sobre los grupos del medio -->
+
+                <div *ngFor="let servoGroup of middleServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                    <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                        <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                            <pencil-square-solid-icon />
+                        </button>
+                    </div>
+                    <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                        class="flex items-center justify-center gap-2 mt-4">
+                        <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                            placeholder="Nuevo nombre" />
+                        <button class="btn btn-sm btn-circle btn-success" (click)="updateServoGroupName(servoGroup)">
+                            <check-circle-outline-icon />
+                        </button>
+                        <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                            <x-circle-outline-icon />
+                        </button>
+                    </div>
+                    <div *ngFor="let servo of servoGroup.servo_angles" class="mt-4">
+                        <label for="middle-servo-{{ servo.id }}" class="label">Servo Angle {{ servo.id }}</label>
+                        <input type="range" id="middle-servo-{{ servo.id }}" class="range range-info" min="0" max="180"
+                            step="1" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                        <input type="number" id="middle-number-{{ servo.id }}" class="input input-bordered w-full mt-2"
+                            min="0" max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex flex-col h-full gap-4">
+            <div *ngFor="let servoGroup of leftServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
+                <div *ngIf="!editingName || editingGroupId !== servoGroup.id"
+                    class="flex items-center justify-center gap-2 mt-4">
+                    <h5 class="text-center font-bold">{{ servoGroup.name }}</h5>
+                    <button class="btn btn-sm btn-circle btn-ghost" (click)="startEditing(servoGroup)">
+                        <pencil-square-solid-icon />
+                    </button>
+                </div>
+                <div *ngIf="editingName && editingGroupId === servoGroup.id"
+                    class="flex items-center justify-center gap-2 mt-4">
+                    <input type="text" class="input input-bordered w-full" [(ngModel)]="newGroupName"
+                        placeholder="Nuevo nombre" />
+                    <button class="btn btn-sm btn-circle btn-success" (click)="updateServoGroupName(servoGroup)">
+                        <check-circle-outline-icon />
+                    </button>
+                    <button class="btn btn-sm btn-circle btn-error" (click)="cancelEditing()">
+                        <x-circle-outline-icon />
+                    </button>
+                </div>
+                <div *ngFor="let servo of servoGroup.servo_angles" class="mt-4">
+                    <label for="left-servo-{{ servo.id }}" class="label">Servo Angle {{ servo.id }}</label>
+                    <input type="range" id="left-servo-{{ servo.id }}" class="range range-info" min="0" max="180"
+                        step="1" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                    <input type="number" id="left-number-{{ servo.id }}" class="input input-bordered w-full mt-2"
+                        min="0" max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Panel derecho (2/6 de la pantalla) -->
+    <div class="col-span-2 grid grid-cols-1 gap-4 p-4">
+        <div class="flex flex-col h-full gap-4">
+            <div class="flex flex-col p-4 gap-4 bg-base-200 shadow-md rounded-lg">
+                <div class="overflow-x-auto">
+                    <table class="table table-xs table-pin-rows table-pin-cols">
+                        <thead>
+                            <tr>
+                                <!-- Columnas fijas (Order, Delay) -->
+                                <th class="bg-base-200 text-center"></th>
+                                <th class="bg-base-200 text-center">Delay (ms)</th>
+
+                                <!-- Columnas dinámicas para los ángulos -->
+                                <th *ngFor="let _ of [].constructor(robot?.initial_position?.angles?.length ?? 0); let i = index"
+                                    class="bg-base-200 text-center">
+                                    Servo {{ i + 1 }}
+                                </th>
+                                <th class="bg-base-200"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let position of positions">
+                                <th class="bg-base-200 text-center">
+                                    {{ position.sequence }}
+                                </th>
+
+                                <!-- Columnas fijas -->
+                                <td class="text-center">{{ position.delay }}</td>
+
+                                <!-- Columnas de los ángulos (fijas) -->
+                                <td *ngFor="let angle of position.angles" class="bg-base-200 text-center">
+                                    {{ angle }}
+                                </td>
+
+                                <!-- Checkbox de la fila -->
+                                <th class="bg-base-200 text-center">
+                                    <input type="checkbox" class="checkbox checkbox-xs"
+                                        [checked]="isPositionSelected(position)"
+                                        (click)="$event.stopPropagation(); togglePosition(position)" />
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <input type="number" class="input input-bordered w-full mb-4" min="100" max="1000" [(ngModel)]="delay"
+                    placeholder="Tiempo (ms)" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- <button class="btn btn-primary w-full" (click)="moveToPositionById()">Mover a Posicion</button> -->
+                    <button class="btn btn-warning w-full" (click)="movePositionUp()">Subir Posicion</button>
+                    <button class="btn btn-warning w-full" (click)="movePositionDown()">Bajar Posicion</button>
+                    <button class="btn btn-success w-full" (click)="createPosition()">Crear Posición</button>
+                    <button class="btn btn-warning w-full" (click)="updatePosition()">Actualizar Posición</button>
+                    <button class="btn btn-error w-full" (click)="deletePosition()">Eliminar Posición</button>
+                    <button class="btn btn-info w-full" (click)="moveToPosition()">Mover a Posicion</button>
+                    <button class="md:col-span-2 btn btn-info w-full" (click)="moveToInitialPosition()">Mover a Posición
+                        Inicial</button>
+                    <button class="md:col-span-2 btn btn-info w-full" (click)="updateAndMoveToInitialPosition()">Guardar
+                        y Mover a Posición Inicial</button>
+                    <!-- <button class="md:col-span-2 btn btn-secondary w-full" (click)="updateAndmoveToInitialPosition()">Guardar y Mover a Posición Inicial</button> -->
+                </div>
+            </div>
+
+            <div class="flex flex-col p-4 gap-4 bg-base-200 shadow-md rounded-lg">
+                <select class="select select-bordered w-full col-span-full" [(ngModel)]="selectedMovement"
+                    (ngModelChange)="loadPositions()">
+                    <option [ngValue]="null">Seleccione un movimiento</option>
+                    <option *ngFor="let movement of movements" [ngValue]="movement">{{ movement.name }}</option>
+                </select>
+                <input type="text" class="input input-bordered w-full col-span-full" [(ngModel)]="newMovementName"
+                    placeholder="Nombre del Movimiento a crear" />
+                <div class="overflow-x-auto">
+                    <table class="table table-xs table-pin-rows table-pin-cols">
+                        <thead>
+                            <tr>
+                                <th class="bg-base-200 text-center"></th>
+                                <th *ngFor="let col of coordinateTable[0]; let j = index"
+                                    class="bg-base-200 text-center">
+                                    {{ j + 1 }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of coordinateTable; let i = index">
+                                <th class="bg-base-200 text-center">
+                                    {{ i + 1 }}
+                                </th>
+                                <td *ngFor="let cell of row; let j = index" class="bg-base-200">
+                                    <input #checkboxRef type="checkbox" [checked]="isCoordinateChecked(j + 1, i + 1)"
+                                        (change)="toggleCoordinate(j + 1, i + 1, checkboxRef.checked)"
+                                        class="checkbox checkbox-xs" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button class="btn btn-success w-full" (click)="createMovement()">Crear Movimiento</button>
+                    <button class="btn btn-warning w-full" (click)="updateMovement()">Actualizar Movimiento</button>
+                    <button class="btn btn-error w-full" (click)="deleteMovement()">Eliminar Movimiento</button>
+                    <button class="btn btn-info w-full" (click)="executeMovement()">Ejecutar Movimiento</button>
+                </div>
+            </div>
+            <div class="flex flex-col p-4 gap-4 bg-base-200 shadow-md rounded-lg">
+                <button class="btn btn-success w-full" (click)="saveMovementInLocal()">Guardar Localmente el
+                    Movimiento</button>
+                <button class="btn btn-error w-full" (click)="deleteMovementInLocal()">Eliminar Localmente el
+                    Movimiento</button>
+                <button class="btn btn-success w-full" (click)="saveInitialPositionInLocal()">Guardar Localmente la
+                    Posicion Inicial</button>
+                <button class="btn btn-error w-full" (click)="clearLocalStorage()">Limpiar Almacenamiento Local</button>
+            </div>
+        </div>
+    </div>
+</div>

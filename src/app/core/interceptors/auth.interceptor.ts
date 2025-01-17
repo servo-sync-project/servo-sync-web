@@ -61,7 +61,9 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
 const handleError = (error: HttpErrorResponse) => {
   console.error(error);
   let errorMessage = 'Unexpected error';
-  if (error.error && error.error.detail) {
+  if(error.status == 422){
+    errorMessage = error.error.detail[0].msg;
+  }else if (error.error && error.error.detail) {
     errorMessage = error.error.detail;
   }
   return throwError(() => new Error(errorMessage));

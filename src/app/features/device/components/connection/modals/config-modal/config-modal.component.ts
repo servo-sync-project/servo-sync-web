@@ -12,7 +12,6 @@ import { RobotService } from "../../../../services/robot.service";
 import { ServoGroupService } from "../../../../services/servo-group.service";
 import { PositionJson } from "../../../../models/PositionJson";
 
-
 @Component({
   selector: 'app-config-modal',
   imports: [CommonModule, FormsModule, RouterModule, NgHeroiconsModule],
@@ -58,7 +57,7 @@ export class ConfigModalComponent implements OnChanges {
   ngOnChanges(): void {
     if (this.robot && this.openModal) {
       this.configModal.nativeElement.showModal();
-      this.loadServosGroups(true);
+      this.loadServosGroups();
     }
   }
 
@@ -73,13 +72,13 @@ export class ConfigModalComponent implements OnChanges {
     if (!this.robot) return;
     const content = this.robot.unique_uid;
     navigator.clipboard.writeText(content).then(() => {
-      console.log('Contenido copiado:', content);
+      alert('¡Contenido copiado al portapapeles!');
     }).catch(err => {
-      console.error('Error al copiar:', err);
+      console.error('Error al copiar al portapapeles:', err);
     });
   }
 
-  loadServosGroups(executeMethod: boolean) {
+  loadServosGroups() {
     if (!this.robot) return;
     this.servoGroupService.getAllServoGroupsByRobotId(this.robot.id).subscribe({
       next: (response: ServoGroupResponse[]) => {
@@ -98,8 +97,6 @@ export class ConfigModalComponent implements OnChanges {
         this.rightServoGroups = this.reponseToServoGroupsJson(rightServoGroups, totalServos - middleServosCount - leftServosCount);
         this.middleServoGroups = this.reponseToServoGroupsJson(middleServoGroups, totalServos - leftServosCount);
         this.leftServoGroups = this.reponseToServoGroupsJson(leftServoGroups, totalServos);
-
-        if (executeMethod) this.updateAndMoveToCurrentPosition();
       },
       error: (error: Error) => {
         this.errorMessage = error.message;
@@ -131,7 +128,8 @@ export class ConfigModalComponent implements OnChanges {
     }
     this.servoGroupService.updateServoGroupNumServosById(servoGroupSelected.id, request).subscribe({
       next: (response: ServoGroupResponse) => {
-        this.loadServosGroups(true);//solo en estos casos llamar a updateAndMoveToCurrentPosition
+        console.log(response);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -145,7 +143,8 @@ export class ConfigModalComponent implements OnChanges {
     }
     this.servoGroupService.updateServoGroupNumServosById(servoGroupSelected.id, request).subscribe({
       next: (response: ServoGroupResponse) => {
-        this.loadServosGroups(true);//solo en estos casos llamar a updateAndMoveToCurrentPosition
+        console.log(response);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -163,7 +162,8 @@ export class ConfigModalComponent implements OnChanges {
     }
     this.servoGroupService.createServoGroup(request).subscribe({
       next: (response: ServoGroupResponse) => {
-        this.loadServosGroups(false);//solo en estos casos llamar a updateAndMoveToCurrentPosition
+        console.log(response);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -174,7 +174,8 @@ export class ConfigModalComponent implements OnChanges {
   deleteServoGroup(servoGroupSelected: ServoGroupJson) {
     this.servoGroupService.deleteServoGroup(servoGroupSelected.id).subscribe({
       next: (response: boolean) => {
-        this.loadServosGroups(true);//solo en estos casos llamar a updateAndMoveToCurrentPosition
+        console.log(response);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -189,8 +190,8 @@ export class ConfigModalComponent implements OnChanges {
 
     this.servoGroupService.updateServoGroupNameById(servoGroupSelected.id, request).subscribe({
       next: (response: ServoGroupResponse) => {
-        console.log('Group name updated');
-        this.loadServosGroups(false);
+        console.log(response);
+        this.loadServosGroups();
         this.cancelEditing();
       },
       error: (error) => {
@@ -212,11 +213,11 @@ export class ConfigModalComponent implements OnChanges {
     this.newGroupName = "";
   }
 
-  increaseServoGroupSequence(servoGroupSelected: ServoGroupJson) {
+  moveDownServoGroup(servoGroupSelected: ServoGroupJson) {
     this.servoGroupService.increaseServoGroupSequenceById(servoGroupSelected.id).subscribe({
       next: (response: ServoGroupResponse) => {
         console.log(response);
-        this.loadServosGroups(false);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -224,11 +225,11 @@ export class ConfigModalComponent implements OnChanges {
     });
   }
 
-  decreaseServoGroupSequence(servoGroupSelected: ServoGroupJson) {
+  moveUpServoGroup(servoGroupSelected: ServoGroupJson) {
     this.servoGroupService.decreaseServoGroupSequenceById(servoGroupSelected.id).subscribe({
       next: (response: ServoGroupResponse) => {
         console.log(response);
-        this.loadServosGroups(false);
+        this.loadServosGroups();
       },
       error: (error) => {
         this.errorMessage = error.message;
@@ -277,7 +278,7 @@ export class ConfigModalComponent implements OnChanges {
       },
     };
 
-    this.robotService.updateAndmoveToInitialPositionById(this.robot.id, request).subscribe({
+    this.robotService.updateInitialPositionById(this.robot.id, request).subscribe({
       next: (response: RobotResponse) => {
         console.log(response);
         this.response.emit(response);

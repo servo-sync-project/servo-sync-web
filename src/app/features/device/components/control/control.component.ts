@@ -71,7 +71,7 @@ export class ControlComponent implements OnInit {
   executeMovement(selectedMoveId: number) {
     if (!this.robot) return;
     this.robotService.executeMovementByIdAndYourId(this.robot.id, selectedMoveId).subscribe({
-      next: (response: boolean) => {
+      next: (response: RobotResponse) => {
         console.log(response);
       },
       error: (error: Error) => {
@@ -83,7 +83,7 @@ export class ControlComponent implements OnInit {
   moveToInitialPosition() {
     if (!this.robot) return;
     this.robotService.moveToInitialPositionById(this.robot.id).subscribe({
-      next: (response: boolean) => {
+      next: (response: RobotResponse) => {
         console.log(response);
       },
       error: (error: Error) => {

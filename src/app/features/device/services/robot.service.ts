@@ -30,10 +30,20 @@ export class RobotService {
     return this.httpClient.get<RobotResponse[]>(URL);
   }
 
+  getRobotByUniqueUid(uniqueUid: string){
+    let URL = URL_SERVICIOS + "/robots/uuid/" + uniqueUid;
+    return this.httpClient.get<RobotResponse>(URL);
+  }
+
   updateRobotById(robotId: number, request: UpdateRobotRequest) {
     let URL = URL_SERVICIOS + "/robots/" + robotId;
     return this.httpClient.put<RobotResponse>(URL, request);
   }  
+
+  updateInitialPositionById(robotId: number, request: UpdateInitialPositionRequest){
+    let URL = URL_SERVICIOS + "/robots/" + robotId + "/initial-position";
+    return this.httpClient.put<RobotResponse>(URL, request);
+  }
 
   updateImageById(robotId: number, imageFile: File){
     const formData = new FormData();
@@ -55,35 +65,26 @@ export class RobotService {
   }
 
   moveToInitialPositionById(robotId: number){
-    let URL = URL_SERVICIOS + "/robots/" + robotId + "/move/initial-position";
-    return this.httpClient.post<boolean>(URL, {});
-  }
-
-  updateAndmoveToInitialPositionById(robotId: number, request: UpdateInitialPositionRequest){
-    let URL = URL_SERVICIOS + "/robots/" + robotId + "/move/initial-position";
-    return this.httpClient.put<RobotResponse>(URL, request);
+    let URL = URL_SERVICIOS + "/robots/" + robotId + "/send-positions/initial-position";
+    return this.httpClient.post<RobotResponse>(URL, {});
   }
 
   updateAndMoveToCurrentPositionById(robotId: number, request: UpdateCurrentPositionRequest){
-    let URL = URL_SERVICIOS + "/robots/" + robotId + "/move/current-position";
-    return this.httpClient.put<RobotResponse>(URL, request);
-  }
-
-  getRobotByUniqueUid(uniqueUid: string){
-    let URL = URL_SERVICIOS + "/robots/uuid/" + uniqueUid;
-    return this.httpClient.get<RobotResponse>(URL);
+    let URL = URL_SERVICIOS + "/robots/" + robotId + "/send-positions/current-position";
+    return this.httpClient.post<RobotResponse>(URL, request);
   }
 
   executeMovementByIdAndYourId(robotId: number, movementId: number){
-    let URL = URL_SERVICIOS + "/robots/" + robotId + "/movements/" + movementId + "/execute";
-    return this.httpClient.post<boolean>(URL, {});
+    let URL = URL_SERVICIOS + "/robots/" + robotId + "/send-positions/movements/" + movementId;
+    return this.httpClient.post<RobotResponse>(URL, {});
   }
 
   moveToPositionByIdAndYourId(robotId: number, positionId: number){
-    let URL = URL_SERVICIOS + "/robots/" + robotId + "/movements/positions/" + positionId + "/move";
-    return this.httpClient.post<boolean>(URL, {});
+    let URL = URL_SERVICIOS + "/robots/" + robotId + "/send-positions/movements/positions/" + positionId;
+    return this.httpClient.post<RobotResponse>(URL, {});
   }
-  
+
+  // ---------------- ENDPOINTS TRANSACCIONALES PARA EL ALMACENAMIENTO LOCAL DEL ROBOT-----------------
   saveMovementInLocalByIdAndYourId(robotId: number, movementId: number) {
     let URL = URL_SERVICIOS + "/robots/" + robotId + "/storage/movements/" + movementId;
     return this.httpClient.put<boolean>(URL, {});

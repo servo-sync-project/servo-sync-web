@@ -5,18 +5,20 @@
             <x-mark-solid-icon />
         </button>
         <h3 class="text-lg text-center font-bold">Configurar Servo Groups</h3>
-        <button class="btn btn-info w-full mt-2" (click)="copyButtonContent()">
-            <document-duplicate-solid-icon/>
+        <div role="alert" class="alert alert-info w-full mt-2 p-0">
+            <button class="btn btn-info" (click)="copyButtonContent()">
+                <document-duplicate-solid-icon />
+            </button>
             {{robot?.unique_uid ?? 'NOT FOUND'}}
-        </button>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
             <div class="flex flex-col h-full gap-4">
                 <div *ngFor="let servoGroup of rightServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
                     <div class="grid grid-cols-2 gap-2">
-                        <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                        <button class="btn btn-sm btn-info" (click)="moveUpServoGroup(servoGroup)">
                             <chevron-double-up-solid-icon />
                         </button>
-                        <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                        <button class="btn btn-sm btn-info" (click)="moveDownServoGroup(servoGroup)">
                             <chevron-double-down-solid-icon />
                         </button>
                     </div>
@@ -44,7 +46,7 @@
                         class="flex flex-col items-center justify-center">
                         <label for="right-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
                         <input type="number" id="right-number-{{ servo.id }}" class="input input-bordered w-full"
-                            min="0" max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                            min="0" max="180" [(ngModel)]="servo.angle" />
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-4">
                         <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
@@ -84,10 +86,10 @@
                 <div class="flex flex-col gap-4">
                     <div *ngFor="let servoGroup of middleServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
                         <div class="grid grid-cols-2 gap-2">
-                            <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                            <button class="btn btn-sm btn-info" (click)="moveUpServoGroup(servoGroup)">
                                 <chevron-double-up-solid-icon />
                             </button>
-                            <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                            <button class="btn btn-sm btn-info" (click)="moveDownServoGroup(servoGroup)">
                                 <chevron-double-down-solid-icon />
                             </button>
                         </div>
@@ -116,8 +118,7 @@
                             class="flex flex-col items-center justify-center">
                             <label for="middle-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
                             <input type="number" id="middle-number-{{ servo.id }}" class="input input-bordered w-full"
-                                min="0" max="180" [(ngModel)]="servo.angle"
-                                (change)="updateAndMoveToCurrentPosition()" />
+                                min="0" max="180" [(ngModel)]="servo.angle" />
                         </div>
                         <div class="grid grid-cols-2 gap-2 mt-4">
                             <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
@@ -140,10 +141,10 @@
             <div class="flex flex-col h-full gap-4">
                 <div *ngFor="let servoGroup of leftServoGroups" class="p-4 bg-base-200 shadow-md rounded-lg">
                     <div class="grid grid-cols-2 gap-2">
-                        <button class="btn btn-sm btn-info" (click)="decreaseServoGroupSequence(servoGroup)">
+                        <button class="btn btn-sm btn-info" (click)="moveUpServoGroup(servoGroup)">
                             <chevron-double-up-solid-icon />
                         </button>
-                        <button class="btn btn-sm btn-info" (click)="increaseServoGroupSequence(servoGroup)">
+                        <button class="btn btn-sm btn-info" (click)="moveDownServoGroup(servoGroup)">
                             <chevron-double-down-solid-icon />
                         </button>
                     </div>
@@ -171,7 +172,7 @@
                         class="flex flex-col items-center justify-center">
                         <label for="left-servo-{{ servo.id }}" class="label">Servo {{ servo.id }}</label>
                         <input type="number" id="left-number-{{ servo.id }}" class="input input-bordered w-full" min="0"
-                            max="180" [(ngModel)]="servo.angle" (change)="updateAndMoveToCurrentPosition()" />
+                            max="180" [(ngModel)]="servo.angle" />
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-4">
                         <button class="btn btn-sm btn-info" (click)="createServo(servoGroup)">
@@ -191,6 +192,7 @@
             </div>
         </div>
         <div class="modal-action">
+            <button class="btn btn-info" (click)="updateAndMoveToCurrentPosition()">Move to Position</button>
             <input type="number" class="input input-bordered" min="100" max="1000" [(ngModel)]="delay"
                 placeholder="Tiempo (ms)" />
             <button class="btn btn-info" (click)="updateInitialPosition()">Create Initial Position</button>

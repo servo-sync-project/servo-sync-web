@@ -163,16 +163,15 @@
                     placeholder="Tiempo (ms)" />
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- <button class="btn btn-primary w-full" (click)="moveToPositionById()">Mover a Posicion</button> -->
-                    <button class="btn btn-warning w-full" (click)="movePositionUp()">Subir Posicion</button>
-                    <button class="btn btn-warning w-full" (click)="movePositionDown()">Bajar Posicion</button>
+                    <button class="btn btn-warning w-full" (click)="moveUpPosition()">Subir Posicion</button>
+                    <button class="btn btn-warning w-full" (click)="moveDownPosition()">Bajar Posicion</button>
                     <button class="btn btn-success w-full" (click)="createPosition()">Crear Posición</button>
                     <button class="btn btn-warning w-full" (click)="updatePosition()">Actualizar Posición</button>
                     <button class="btn btn-error w-full" (click)="deletePosition()">Eliminar Posición</button>
                     <button class="btn btn-info w-full" (click)="moveToPosition()">Mover a Posicion</button>
                     <button class="md:col-span-2 btn btn-info w-full" (click)="moveToInitialPosition()">Mover a Posición
                         Inicial</button>
-                    <button class="md:col-span-2 btn btn-info w-full" (click)="updateAndMoveToInitialPosition()">Guardar
-                        y Mover a Posición Inicial</button>
+                    <button class="md:col-span-2 btn btn-info w-full" (click)="updateInitialPosition()">Guardar Posición Inicial</button>
                     <!-- <button class="md:col-span-2 btn btn-secondary w-full" (click)="updateAndmoveToInitialPosition()">Guardar y Mover a Posición Inicial</button> -->
                 </div>
             </div>

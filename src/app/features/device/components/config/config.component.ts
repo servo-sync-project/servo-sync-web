@@ -195,7 +195,7 @@ export class ConfigComponent implements OnInit {
     })
   }
 
-  updateAndMoveToInitialPosition() {
+  updateInitialPosition() {
     if (!this.robot) return;
     const request: UpdateInitialPositionRequest = {
       initial_position: {
@@ -207,7 +207,7 @@ export class ConfigComponent implements OnInit {
         ]
       }
     }
-    this.robotService.updateAndmoveToInitialPositionById(this.robot.id, request).subscribe({
+    this.robotService.updateInitialPositionById(this.robot.id, request).subscribe({
       next: (response: RobotResponse) => {
         console.log(response);
         this.robot = response;
@@ -222,8 +222,9 @@ export class ConfigComponent implements OnInit {
   moveToInitialPosition() {
     if (!this.robot) return;
     this.robotService.moveToInitialPositionById(this.robot.id).subscribe({
-      next: (response: boolean) => {
+      next: (response: RobotResponse) => {
         console.log(response);
+        this.robot = response;
         this.loadServosGroups();
       },
       error: (error: Error) => {
@@ -285,8 +286,10 @@ export class ConfigComponent implements OnInit {
   executeMovement() {
     if (!this.robot || !this.selectedMovement) return;
     this.robotService.executeMovementByIdAndYourId(this.robot.id, this.selectedMovement.id).subscribe({
-      next: (response: boolean) => {
+      next: (response: RobotResponse) => {
         console.log(response);
+        this.robot = response;
+        this.loadServosGroups();
       },
       error: (error: Error) => {
         this.errorMessage = error.message;
@@ -350,7 +353,7 @@ export class ConfigComponent implements OnInit {
     })
   }
 
-  movePositionDown() {
+  moveDownPosition() {
     if (!this.selectedPosition) return;
     this.positionService.increasePositionSequenceById(this.selectedPosition.id).subscribe({
       next: (response: PositionResponse) => {
@@ -363,7 +366,7 @@ export class ConfigComponent implements OnInit {
     })
   }
 
-  movePositionUp() {
+  moveUpPosition() {
     if (!this.selectedPosition) return;
     this.positionService.decreasePositionSequenceById(this.selectedPosition.id).subscribe({
       next: (response: PositionResponse) => {
@@ -379,8 +382,10 @@ export class ConfigComponent implements OnInit {
   moveToPosition() {
     if (!this.robot || !this.selectedPosition) return;
     this.robotService.moveToPositionByIdAndYourId(this.robot.id, this.selectedPosition.id).subscribe({
-      next: (response: boolean) => {
+      next: (response: RobotResponse) => {
         console.log(response);
+        this.robot = response;
+        this.loadServosGroups();
       },
       error: (error: Error) => {
         this.errorMessage = error.message;

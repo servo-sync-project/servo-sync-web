@@ -1,5 +1,5 @@
 export const environment = {
-    URL_BACKEND: 'http://ec2-18-208-158-0.compute-1.amazonaws.com:8000',
-    URL_SERVICIOS: 'http://ec2-18-208-158-0.compute-1.amazonaws.com:8000/api/v1',
-    URL_FRONTEND: 'http://ec2-18-208-158-0.compute-1.amazonaws.com',
+    URL_BACKEND: 'https://servo-sync-api-production.up.railway.app',
+    URL_SERVICIOS: 'https://servo-sync-api-production.up.railway.app/api/v1',
+    URL_FRONTEND: 'https://servo-sync-web-production.up.railway.app',
 };
